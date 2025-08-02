@@ -90,7 +90,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Username or Email"
+                android:text="Email"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="#2c3e50"
@@ -101,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="#f8f9fa"
-                android:hint="Enter your username or email"
+                android:hint="Enter email"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:textSize="16sp"
@@ -211,167 +211,18 @@
                     android:background="#ecf0f1" />
 
             </LinearLayout>
-
-            <!-- Emergency Access Button -->
             <Button
-                android:id="@+id/buttonEmergencyAccess"
+                android:id="@+id/buttonCreateAcc"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="🚨 Emergency Access"
+                android:text="Create account"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#e74c3c"
-                android:background="#ffffff"
+                android:textColor="#ffffff"
+                android:background="#2980b9"
                 android:layout_marginBottom="16dp" />
 
         </LinearLayout>
-
-        <!-- Quick Access Cards -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Quick Access"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#2c3e50"
-                android:layout_marginBottom="16dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <!-- Tsunami Monitor -->
-                <LinearLayout
-                    android:id="@+id/cardTsunami"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="#ffffff"
-                    android:padding="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🌊"
-                        android:textSize="32sp"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tsunami"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#2c3e50"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/statusTsunami"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="● Normal"
-                        android:textSize="12sp"
-                        android:textColor="#27ae60" />
-
-                </LinearLayout>
-
-                <!-- Landslide Monitor -->
-                <LinearLayout
-                    android:id="@+id/cardLandslide"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="#ffffff"
-                    android:padding="16dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🏔️"
-                        android:textSize="32sp"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Landslide"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#2c3e50"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/statusLandslide"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="● Stable"
-                        android:textSize="12sp"
-                        android:textColor="#27ae60" />
-
-                </LinearLayout>
-
-                <!-- Flood Monitor -->
-                <LinearLayout
-                    android:id="@+id/cardFlood"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:background="#ffffff"
-                    android:padding="16dp"
-                    android:layout_marginStart="8dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="🌊"
-                        android:textSize="32sp"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Flood"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#2c3e50"
-                        android:layout_marginBottom="4dp" />
-
-                    <TextView
-                        android:id="@+id/statusFlood"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="● Safe"
-                        android:textSize="12sp"
-                        android:textColor="#27ae60" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
         <!-- Footer -->
         <LinearLayout
             android:layout_width="match_parent"

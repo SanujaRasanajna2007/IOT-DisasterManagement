@@ -9,21 +9,35 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import com.example.mad_day3.databinding.ActivityMainBinding
+import com.example.mad_day3.databinding.ActivitySecondBinding
 
 class SecondActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySecondBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_second)
-        val btn2 = findViewById<Button>(R.id.backButton)
-        val settings = findViewById<LinearLayout>(R.id.settingsTab)
-        settings.setOnClickListener {
-            val intent3 = Intent(this,ThirdActivity::class.java)
-            startActivity(intent3)
+        binding = ActivitySecondBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        if (savedInstanceState == null) {
+            replaceFragment(alerts())
         }
-        btn2.setOnClickListener{
-            val intent2 = Intent(this,MainActivity::class.java)
-            startActivity(intent2)
+        binding.bottomNavigationView.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.alertPart -> replaceFragment(alerts())
+                R.id.weatherPart -> replaceFragment(weather())
+                else -> {
+                }
+            }
+            true
         }
     }
+    private fun replaceFragment(fragment : Fragment){
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frameLayout, fragment)
+        fragmentTransaction.commit()
+    }
+
 }
