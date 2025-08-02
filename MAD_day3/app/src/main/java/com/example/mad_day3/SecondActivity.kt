@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.example.mad_day3.Warning.WarningFragment
 import com.example.mad_day3.databinding.ActivityMainBinding
 import com.example.mad_day3.databinding.ActivitySecondBinding
 
@@ -27,6 +28,8 @@ class SecondActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.alertPart -> replaceFragment(alerts())
                 R.id.weatherPart -> replaceFragment(weather())
+                R.id.warningsPart -> replaceFragment(WarningFragment())
+                R.id.settingsPart -> replaceFragment(SettingsFragment())
                 else -> {
                 }
             }
