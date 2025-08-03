@@ -1,127 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     tools:context=".weather">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <LinearLayout
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
+        <TextView
             android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:gravity="center_vertical">
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Select">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteID"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:focusable="false" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/comboActionBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Go"
-                android:layout_marginStart="8dp"
-                android:backgroundTint="#FF0079FF"
-                android:textColor="@android:color/white" />
-        </LinearLayout>
-
+            android:text="Notifications"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            >
+        </TextView>
+        <!-- Scrollable Content Area -->
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="650dp">
-            <androidx.cardview.widget.CardView
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:fillViewport="true">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                app:cardElevation="24dp"
-                app:cardCornerRadius="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-                <LinearLayout
+                android:orientation="vertical">
+
+                <!-- Compact Notification Card -->
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Landslide Alert: High"
-                        android:textColor="@color/black"
-                        android:layout_gravity="center"
-                        android:layout_margin="8dp"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.081"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Time: 18:30:00"
-                        android:textColor="@color/black"
-                        android:layout_margin="8dp"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.081"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Date: 2020/04/20"
-                        android:textColor="@color/black"
-                        android:layout_margin="8dp"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.081"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp"
+                    app:cardPreventCornerOverlap="true">
+
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Find More"
-                            android:backgroundTint="#FF0079FF"
-                            android:layout_height="wrap_content">
-                        </Button>
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="5dp"
-                            android:backgroundTint="#CB0404"
-                            android:text="Delete"
-                            android:layout_height="wrap_content">
-                        </Button>
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <!-- Compact Alert Header -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/warning_circle_svgrepo_com"
+                                android:tint="@color/red_500"
+                                android:layout_marginEnd="8dp"/>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="LANDSLIDE ALERT"
+                                android:textColor="@color/red_500"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+
+                        </LinearLayout>
+
+                        <!-- Alert Details -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Potential landslide detected in your area"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="4dp"/>
+
+                        <!-- Time/Date Row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingTop="4dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="18:30:00"
+                                android:textColor="@color/gray_600"
+                                android:textSize="12sp"
+                                android:drawableStart="@drawable/ic_time"
+                                android:drawablePadding="4dp"
+                                android:drawableTint="@color/gray_600"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2020/04/20"
+                                android:textColor="@color/gray_600"
+                                android:textSize="12sp"
+                                android:layout_marginStart="16dp"
+                                android:drawableStart="@drawable/ic_date"
+                                android:drawablePadding="4dp"
+                                android:drawableTint="@color/gray_600"/>
+                        </LinearLayout>
+
+                        <!-- Action Buttons -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="end"
+                            android:layout_marginTop="12dp">
+
+                            <com.google.android.material.button.MaterialButton
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="DETAILS"
+                                android:textColor="@color/blue_500"
+                                android:textSize="12sp"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="2dp"/>
+
+                            <com.google.android.material.button.MaterialButton
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="DISMISS"
+                                android:textColor="@color/gray_600"
+                                android:textSize="12sp"
+                                android:layout_marginStart="8dp"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="2dp"/>
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Additional cards can be added here -->
+            </LinearLayout>
         </ScrollView>
     </LinearLayout>
-
 </FrameLayout>

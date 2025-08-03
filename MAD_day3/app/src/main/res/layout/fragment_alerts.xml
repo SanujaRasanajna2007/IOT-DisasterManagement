@@ -87,11 +87,69 @@
                     android:layout_height="1dp"
                     android:background="#ecf0f1"
                     android:layout_marginBottom="16dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Soil moisture level:"
+                        android:textSize="16sp"
+                        android:textColor="#7f8c8d" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10%"
+                        android:textSize="16sp"
+                        android:textColor="#2c3e50" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Tilt detection"
+                        android:textSize="16sp"
+                        android:textColor="#7f8c8d" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No"
+                        android:textSize="16sp"
+                        android:textColor="#2c3e50" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Slope movement detection"
+                        android:textSize="16sp"
+                        android:textColor="#7f8c8d" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Not Detected"
+                        android:textSize="16sp"
+                        android:textColor="#2c3e50" />
+                </LinearLayout>
                 <Button
                     android:layout_width="match_parent"
-                    android:text="Find More"
-                    android:layout_height="wrap_content">
-
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="View history">
                 </Button>
             </LinearLayout>
 
@@ -204,59 +262,32 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
-                <!-- Risk Assessment -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:background="#e8f5e8"
-                    android:padding="16dp">
-
-                    <LinearLayout
+                    android:layout_marginBottom="12dp">
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="🏔️ Landslide Risk Assessment"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="#2c3e50"
-                            android:layout_marginBottom="4dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Based on 24h rainfall and soil conditions"
-                            android:textSize="12sp"
-                            android:textColor="#7f8c8d" />
-
-                    </LinearLayout>
-
+                        android:text="Preasure:"
+                        android:textSize="16sp"
+                        android:textColor="#7f8c8d" />
                     <TextView
-                        android:id="@+id/lastUpdated5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="LOW"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#27ae60"
-                        android:layout_gravity="center_vertical" />
-
+                        android:text="200hpa"
+                        android:textSize="16sp"
+                        android:textColor="#2c3e50" />
                 </LinearLayout>
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="Find More">
+                    android:text="View history">
                 </Button>
-
             </LinearLayout>
-
             <!-- Weather Forecast Card -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -280,23 +311,26 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginBottom="12dp">
-
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Condition:"
+                        android:text="Measurement:"
                         android:textSize="16sp"
                         android:textColor="#7f8c8d" />
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Low"
+                        android:text="2g"
                         android:textSize="16sp"
                         android:textColor="#2c3e50" />
-
                 </LinearLayout>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="View history">
+                </Button>
             </LinearLayout>
 
             <!-- Emergency Contacts Card -->
