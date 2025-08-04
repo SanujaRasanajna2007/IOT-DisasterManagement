@@ -1,10 +1,18 @@
 package com.example.mad_day3
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.Toast
+import com.example.mad_day3.Controller.getCityName
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,7 +25,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class alerts : Fragment() {
-    // TODO: Rename and change types of parameters
+    val db = Firebase.firestore
     private var param1: String? = null
     private var param2: String? = null
 
@@ -37,6 +45,29 @@ class alerts : Fragment() {
         return inflater.inflate(R.layout.fragment_alerts, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val cityNameObj = getCityName()
+        val categories = mutableListOf<String>()
+        db.collection("locationInfo")
+            .whereEqualTo("name",cityNameObj.getCityName())
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    categories.add(document.getString("category") ?: "")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(requireContext(), "Failed to retrieve categories", Toast.LENGTH_LONG).show()
+            }
+        categories.forEach { item ->
+            if(item == "Landslide"){
+
+            }else if(item == "Rainfall"){
+
+            }
+        }
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
