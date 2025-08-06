@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 
 class getCityName {
-    fun getCityName(): String? {
+    fun getCityName(context: Context): String? {
         val PREF_NAME = "prefs"
         val KEY_NAME = "city"
-        lateinit var sharedPref : SharedPreferences
-        var savedName = sharedPref.getString(KEY_NAME, null)
-        return savedName
+
+        val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPref.getString(KEY_NAME, null)
     }
 }
