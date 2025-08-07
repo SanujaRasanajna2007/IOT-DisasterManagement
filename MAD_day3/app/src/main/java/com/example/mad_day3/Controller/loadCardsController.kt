@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mad_day3.Model.landslideGroundMotions
 import com.example.mad_day3.Model.landslideTilt
 import com.example.mad_day3.R
 import com.google.firebase.Firebase
@@ -21,15 +22,18 @@ import com.google.firebase.database.database
 import com.google.firebase.firestore.firestore
 
 class loadCardsController {
+    var change : Double = 0.0
+    var runOnce: Int = 0
+    var dangerStatus : Int = 0
     val db = Firebase.firestore
     val database = FirebaseDatabase.getInstance()
     val landslideMovementRef: DatabaseReference = database.getReference("Sensors/MPU6050Readings")
     val landslideTiltRef: DatabaseReference = database.getReference("Sensors/TiltReadings")
     private var tiltEventListener: ValueEventListener? = null
+    private var MotionEventListener2: ValueEventListener? = null
     public fun getTiltData(view: View, cityName: String?) {
         // Remove existing listener if any
         tiltEventListener?.let { landslideTiltRef.removeEventListener(it) }
-
         tiltEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -48,9 +52,24 @@ class loadCardsController {
                         }
                     }
                     latestReading?.let {
-                        if(it.location == cityName){
+//                        if(it.location == cityName){
+//                            if(it.value == 1){
+//                                dangerStatus++
+//                                view.findViewById<TextView>(R.id.tiltStatus)?.text =
+//                                    "YES: " + it.value?.toString() ?: "N/A"
+//                            }else{
+//                                view.findViewById<TextView>(R.id.tiltStatus)?.text =
+//                                    "NO: " + it.value?.toString() ?: "N/A"
+//                            }
+//
+//                        }
+                        if(it.value == 1){
+                            dangerStatus++
                             view.findViewById<TextView>(R.id.tiltStatus)?.text =
-                                it.value?.toString() ?: "N/A"
+                                "YES: " + it.value?.toString() ?: "N/A"
+                        }else{
+                            view.findViewById<TextView>(R.id.tiltStatus)?.text =
+                                "NO: " + it.value?.toString() ?: "N/A"
                         }
 //                        view.findViewById<TextView>(R.id.tiltTitleID)?.text =
 //                            it.timestamp.toString()
@@ -64,7 +83,58 @@ class loadCardsController {
         }
         tiltEventListener?.let { landslideTiltRef.addValueEventListener(it) }
     }
+    public fun getMotionData(view: View, cityName: String?){
+        MotionEventListener2?.let { landslideMovementRef.removeEventListener(it) }
+        MotionEventListener2 = object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()){
+                    var latestMotionReading: landslideGroundMotions? = null
+                    for (childSnapshot in snapshot.children){
+                        val reading = childSnapshot.getValue(landslideGroundMotions::class.java)
+                        reading?.let{
+                            if (it.timestamp != null) {
+                                if (latestMotionReading == null ||
+                                    (latestMotionReading?.timestamp != null &&
+                                            it.timestamp > latestMotionReading!!.timestamp)) {
+                                    latestMotionReading = it
+                                }
+                            }
+                        }
+                    }
+                    latestMotionReading?.let {
+                        if(runOnce == 0){
+                            change = it.accelX
+                            runOnce = 2
+                        }
+                        if(change<it.accelX){
+                            dangerStatus++
+                            if(dangerStatus == 2){
+                                view.findViewById<TextView>(R.id.statusDetail)?.text =
+                                    "● WARNING" ?: "N/A"
+                                dangerStatus = 0
+                            }
+                            view.findViewById<TextView>(R.id.movementStatus)?.text =
+                                "YES: " +  it.accelX?.toString() ?: "N/A"
+                        }else{
+                            view.findViewById<TextView>(R.id.movementStatus)?.text =
+                                 "NO: "+ it.accelX?.toString() ?: "N/A"
+                        }
+                        change = it.accelX
 
+//                        if(it.location == cityName){
+//                            view.findViewById<TextView>(R.id.movementStatus)?.text =
+//                                it.accelX?.toString() ?: "N/A"
+//                        }
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Data read failed (motion): ${error.message}")
+            }
+
+        }
+        MotionEventListener2?.let { landslideMovementRef.addValueEventListener(it) }
+    }
     private fun setupRecyclerView(view: View, items: List<LandSlideItem>, context: Context) {
         val landSlideRecyclerView = view.findViewById<RecyclerView>(R.id.recycleview)
         landSlideRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -88,7 +158,7 @@ class loadCardsController {
 //                                val tilt = document.getString("tilt") ?: "Unknown"
 //                                val movement = document.getString("movement") ?: "Unknown"
 //                                landslideItems.add(LandSlideItem(moisture, tilt, movement))
-                                landslideItems.add(LandSlideItem(0.0, "test", "yes"))
+                                landslideItems.add(LandSlideItem(0.0, "test", ""))
                             }
                             "Rainfall" -> {
 
@@ -99,6 +169,7 @@ class loadCardsController {
                         setupRecyclerView(view, landslideItems, context)
                         view.findViewById<RecyclerView>(R.id.recycleview).visibility = View.VISIBLE
                         getTiltData(view,cityName)
+                        getMotionData(view,cityName)
                     } else {
                         Toast.makeText(context, "No landslide data available", Toast.LENGTH_SHORT).show()
                         Log.d("AlertsFragment", "No landslide items found")
