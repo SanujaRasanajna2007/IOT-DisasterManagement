@@ -35,18 +35,25 @@ class alerts : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_alerts, container, false)
     }
-    private fun setupRecyclerView(view: View, items: List<LandSlideItem>) {
-        val landSlideRecyclerView = view.findViewById<RecyclerView>(R.id.recycleview)
-        landSlideRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        landSlideRecyclerView.adapter = landSlideAdapter(items)
-        Log.d("AlertsFragment", "RecyclerView adapter set with ${items.size} items")
-    }
+//    private fun setupRecyclerView(view: View, items: List<LandSlideItem>) {
+//        val landSlideRecyclerView = view.findViewById<RecyclerView>(R.id.recycleview)
+//        landSlideRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+//        landSlideRecyclerView.adapter = landSlideAdapter(items)
+//        Log.d("AlertsFragment", "RecyclerView adapter set with ${items.size} items")
+//    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val cityName = getCityName().getCityName(requireContext())
-        view.findViewById<RecyclerView>(R.id.recycleview).visibility = View.GONE
         val loadCardsObj = loadCardsController()
+        view.findViewById<RecyclerView>(R.id.recycleview).visibility = View.GONE
         loadCardsObj.getLandslideCard(view, savedInstanceState, requireContext(), cityName)
+//        if(cityName == "Gampaha"){
+//            view.findViewById<RecyclerView>(R.id.recycleviewRainfall).visibility = View.GONE
+//
+//        }else if(cityName == "Rathnapura"){
+//            view.findViewById<RecyclerView>(R.id.recycleview).visibility = View.GONE
+//            loadCardsObj.getLandslideCard(view, savedInstanceState, requireContext(), cityName)
+//        }
     }
     companion object {
         @JvmStatic

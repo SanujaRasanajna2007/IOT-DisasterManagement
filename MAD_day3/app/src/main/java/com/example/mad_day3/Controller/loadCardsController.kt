@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mad_day3.Model.landslideGroundMotions
 import com.example.mad_day3.Model.landslideTilt
+import com.example.mad_day3.Model.rainfallModel
 import com.example.mad_day3.R
 import com.google.firebase.Firebase
 import com.google.firebase.database.ChildEventListener
@@ -29,8 +30,10 @@ class loadCardsController {
     val database = FirebaseDatabase.getInstance()
     val landslideMovementRef: DatabaseReference = database.getReference("Sensors/MPU6050Readings")
     val landslideTiltRef: DatabaseReference = database.getReference("Sensors/TiltReadings")
+    val RainfallRef: DatabaseReference = database.getReference("Sensors/BMP180Readings")
     private var tiltEventListener: ValueEventListener? = null
     private var MotionEventListener2: ValueEventListener? = null
+    private var rainfallListenerInputSection: ValueEventListener? = null
     public fun getTiltData(view: View, cityName: String?) {
         // Remove existing listener if any
         tiltEventListener?.let { landslideTiltRef.removeEventListener(it) }
@@ -135,6 +138,43 @@ class loadCardsController {
         }
         MotionEventListener2?.let { landslideMovementRef.addValueEventListener(it) }
     }
+    public fun getRainfallData(view: View, cityName: String?){
+        rainfallListenerInputSection?.let { RainfallRef.removeEventListener(it) }
+        rainfallListenerInputSection = object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()){
+                    var latestRainfallReading: rainfallModel? = null
+                    for (childSnapshot in snapshot.children){
+                        val reading = childSnapshot.getValue(rainfallModel::class.java)
+                        reading?.let{
+                            if (it.timestamp != null) {
+                                if (latestRainfallReading == null ||
+                                    (latestRainfallReading?.timestamp != null &&
+                                            it.timestamp > latestRainfallReading!!.timestamp)) {
+                                    latestRainfallReading = it
+                                }
+                            }
+                        }
+                    }
+                    latestRainfallReading?.let {
+//                        if(it.location == cityName){
+//                            view.findViewById<TextView>(R.id.lastUpdated4)?.text =
+//                                it.altitude_m?.toString() ?: "N/A"
+//                        }
+                        view.findViewById<TextView>(R.id.preasureAmu)?.text = it.pressure_hPa?.toString() ?: "N/A"
+                        view.findViewById<TextView>(R.id.altitudeAmu)?.text = it.altitude_m?.toString() ?: "N/A"
+                        view.findViewById<TextView>(R.id.tempAmu)?.text = it.temperature_C?.toString() ?: "N/A"
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Data read failed (rainfall): ${error.message}")
+            }
+
+        }
+        rainfallListenerInputSection?.let { RainfallRef.addValueEventListener(it) }
+    }
     private fun setupRecyclerView(view: View, items: List<LandSlideItem>, context: Context) {
         val landSlideRecyclerView = view.findViewById<RecyclerView>(R.id.recycleview)
         landSlideRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -142,6 +182,11 @@ class loadCardsController {
 
         // Add this to verify if adapter is set
         Log.d("AlertsFragment", "RecyclerView adapter set with ${items.size} items")
+    }
+    private fun setupRecyclerViewRainfall(view: View, items: List<rainfallItem>, context: Context){
+        val RainfallRecyclerView = view.findViewById<RecyclerView>(R.id.recycleview)
+        RainfallRecyclerView.layoutManager = LinearLayoutManager(context)
+        RainfallRecyclerView.adapter = rainfallAdapter(items)
     }
     public fun getLandslideCard(view: View, savedInstanceState: Bundle?, context: Context, cityName: String?){
         try {
@@ -151,19 +196,24 @@ class loadCardsController {
                 .addOnSuccessListener { result ->
                     Log.d("AlertsFragment", "Found ${result.size()} documents")
                     val landslideItems = mutableListOf<LandSlideItem>()
+                    val rainfallItems = mutableListOf<rainfallItem>()
                     for (document in result) {
                         when (document.getString("category")) {
                             "Landslide" -> {
-//                                val moisture = document.getDouble("moisture") ?: 0.0
-//                                val tilt = document.getString("tilt") ?: "Unknown"
-//                                val movement = document.getString("movement") ?: "Unknown"
-//                                landslideItems.add(LandSlideItem(moisture, tilt, movement))
                                 landslideItems.add(LandSlideItem(0.0, "test", ""))
                             }
                             "Rainfall" -> {
-
+                                rainfallItems.add(rainfallItem(0.0,0.0,0.0))
                             }
                         }
+                    }
+                    if(rainfallItems.isNotEmpty()){
+                        setupRecyclerViewRainfall(view, rainfallItems, context)
+                        view.findViewById<RecyclerView>(R.id.recycleview).visibility = View.VISIBLE
+                        getRainfallData(view,cityName)
+                    }else {
+                        Toast.makeText(context, "No rainfall data available", Toast.LENGTH_SHORT).show()
+                        Log.d("AlertsFragment", "No landslide items found")
                     }
                     if (landslideItems.isNotEmpty()) {
                         setupRecyclerView(view, landslideItems, context)
