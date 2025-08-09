@@ -5,6 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.mad_day3.Controller.getCityName
+import com.example.mad_day3.Controller.getUserNotifications
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,7 +40,19 @@ class weather : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_weather, container, false)
     }
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val userID: String? = getCityName().getUserId(requireContext())
+        val notificationControllerObj = getUserNotifications()
+        view.findViewById<RecyclerView>(R.id.notificationHolderSet).visibility = View.GONE
+        notificationControllerObj.getNotifications(view,userID,requireContext())
+        //refresh (swipe)
+        val swipeToRefreshLV = view.findViewById<SwipeRefreshLayout>(R.id.idSwipeToRefresh)
+        swipeToRefreshLV.setOnRefreshListener {
+            notificationControllerObj.getNotifications(view,userID,requireContext())
+            swipeToRefreshLV.isRefreshing = false
+        }
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of

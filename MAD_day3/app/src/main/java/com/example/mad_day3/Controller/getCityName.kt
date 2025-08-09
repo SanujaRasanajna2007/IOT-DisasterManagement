@@ -11,4 +11,10 @@ class getCityName {
         val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         return sharedPref.getString(KEY_NAME, null)
     }
+    fun getUserId(context: Context) : String?{
+        val PREF_NAME = "prefs"
+        val KEY_NAME = "userID"
+        val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPref.getString(KEY_NAME, null)
+    }
 }

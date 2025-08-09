@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
             val password = editTextPassword.text.toString().trim()
              val PREF_NAME = "prefs"
              val KEY_NAME = "city"
+             val userID_key = "userID"
              lateinit var sharedPref : SharedPreferences
              sharedPref = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
@@ -51,6 +53,9 @@ class MainActivity : AppCompatActivity() {
                             val storedPassword = document.getString("password") ?: ""
                             if (password == storedPassword) {
                                 val editor = sharedPref.edit().putString(KEY_NAME, document.getString("city")).apply()
+                                val editor2 = sharedPref.edit().putString(userID_key, document.id).apply()
+                                //TODO: TEST
+                                Log.e("DEBUG", "User ID: ${document.id}")
                                 val intent2 = Intent(this, SecondActivity::class.java)
                                 startActivity(intent2)
                                 return@addOnSuccessListener
