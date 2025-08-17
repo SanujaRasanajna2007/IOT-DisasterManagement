@@ -58,21 +58,6 @@
                             android:textStyle="bold"
                             android:textColor="?attr/colorOnSurface"/>
 
-                        <TextView
-                            android:id="@+id/tvContact"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface"/>
-
-                        <TextView
-                            android:id="@+id/tvAddress"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface"/>
 
                         <TextView
                             android:id="@+id/tvEmail"

@@ -58,11 +58,9 @@ class SettingsFragment : Fragment() {
                 if (document.exists()) {
                     // User Info
                     // Inside loadUserData:
+                    val userName = document.getString("userName") ?: ""
+                    binding.tvUsername.text = userName
                     binding.tvEmail.text = "Email: ${document.getString("email") ?: "No email"}"
-                    binding.tvContact.text = "Contact: ${document.getString("contactNo") ?: "No contact"}"
-                    val address = document.getString("address") ?: ""
-                    val city = document.getString("city") ?: ""
-                    binding.tvAddress.text = "Address: ${if (city.isNotEmpty()) "$address, $city" else address}"
                     // Notification Preferences
                     val notifPrefs = document.get("notificationPrefs") as? Map<String, Boolean>
                     binding.switchLandslide.isChecked = notifPrefs?.get("landslideAlerts") ?: true
@@ -267,6 +265,8 @@ class SettingsFragment : Fragment() {
                 Log.e("Settings", "Failed to save theme", e)
             }
     }
+
+
 
     private fun logoutUser() {
         MaterialAlertDialogBuilder(requireContext())

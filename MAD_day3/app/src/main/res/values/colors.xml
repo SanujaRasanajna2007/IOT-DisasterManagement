@@ -17,6 +17,10 @@
     <color name="surfaceContainer">#FFF2F6FF</color>
     <color name="error_color">#FF0000</color>
     <color name="outline_color">#FF0000</color>
+    <!-- res/values/colors.xml -->
+    <color name="dark_background">#121212</color>
+    <color name="dark_text_color">#FFFFFF</color>
+
 
 
     <!-- Background colors -->

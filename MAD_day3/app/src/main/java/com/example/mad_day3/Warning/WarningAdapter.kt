@@ -20,13 +20,22 @@ class WarningAdapter(
     private val allWarnings = mutableListOf<WarningFragment.Warning>()
 
     fun addWarnings(newWarnings: List<WarningFragment.Warning>) {
-        val current = currentList.toMutableList()
-        current.addAll(newWarnings)
-        submitList(current)
-        Log.d("ADAPTER_DEBUG", "Submitted ${newWarnings.size} new warnings. Total: ${current.size}")
+        // Remove duplicates before adding
+        val uniqueNewWarnings = newWarnings.filter { newWarning ->
+            !allWarnings.any { it.id == newWarning.id }
+        }
+
+        allWarnings.addAll(uniqueNewWarnings)
+        submitList(allWarnings.toList())
+        Log.d("ADAPTER_DEBUG", "Added ${uniqueNewWarnings.size} warnings. Total: ${allWarnings.size}")
+    }
+
+    fun clearWarnings() {
+        allWarnings.clear()
+        submitList(emptyList())
     }
     fun getFilteredList(): List<WarningFragment.Warning> {
-        return currentList
+        return ArrayList(allWarnings) // Return a copy of the full list
     }
 
     inner class WarningViewHolder(private val binding: ItemWarningBinding) :

@@ -98,6 +98,7 @@ class WarningFragment : Fragment() {
         val database = Firebase.database.reference.child("Sensors")
         Log.d("FIREBASE_DEBUG", "Starting to fetch all sensor warnings")
 
+        adapter.clearWarnings() // Clear existing warnings before fetching new ones
         // Map each sensor type to its processor and warning type
         val sensorHandlers = listOf(
             SensorHandler("TiltReadings", ::processLandslideWarnings, "landslide"),
@@ -108,19 +109,28 @@ class WarningFragment : Fragment() {
         )
 
         sensorHandlers.forEach { handler ->
-            Log.d("FIREBASE_DEBUG", "Setting up listener for: ${handler.sensorType}")
             database.child(handler.sensorType).addValueEventListener(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        Log.d("FIREBASE_DEBUG", "Data received for ${handler.sensorType}. Children: ${snapshot.childrenCount}")
+                        if (!snapshot.exists()) {
+                            Log.d("FIREBASE_DEBUG", "No data found for ${handler.sensorType}")
+                            return
+                        }
 
                         val warnings = snapshot.children.mapNotNull { data ->
-                            handler.processor(data)?.apply {
-                                type = handler.warningType
+                            try {
+                                handler.processor(data)?.apply {
+                                    type = handler.warningType
+                                    // Ensure ID is unique across all sensor types
+                                    id = "${handler.sensorType}_${data.key ?: ""}"
+                                }
+                            } catch (e: Exception) {
+                                Log.e("PROCESS_ERROR", "Error processing ${handler.sensorType}", e)
+                                null
                             }
                         }
 
-                        Log.d("FIREBASE_DEBUG", "Processed ${warnings.size} ${handler.warningType} warnings from ${handler.sensorType}")
+                        Log.d("FIREBASE_DEBUG", "Processed ${warnings.size} warnings from ${handler.sensorType}")
                         adapter.addWarnings(warnings)
                     }
 
@@ -240,10 +250,13 @@ class WarningFragment : Fragment() {
             .distinct()
             .sorted()
 
+
         if (locations.isEmpty()) {
             binding.filterStatus.text = "No locations available"
             return
         }
+
+
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Filter by Location")
@@ -251,9 +264,14 @@ class WarningFragment : Fragment() {
                 currentFilter = locations[which]
                 filterWarnings()
             }
-            .setNeutralButton("Clear Filter") { _, _ ->
-                currentFilter = null
-                filterWarnings()
+            .setNeutralButton("Clear Filter") { dialog, _ ->
+            currentFilter = null
+            Log.d("FILTER_DEBUG", "Filter cleared")
+            filterWarnings()
+            dialog.dismiss()
+        }
+            .setOnDismissListener {
+                Log.d("FILTER_DEBUG", "Dialog dismissed. Current filter: $currentFilter")
             }
             .show()
     }
@@ -264,8 +282,13 @@ class WarningFragment : Fragment() {
         } else {
             adapter.getFilteredList()
         }
-        adapter.submitList(filtered)
-        binding.filterStatus.text = currentFilter ?: "Showing all locations"
+        adapter.submitList(filtered.toMutableList()) // Ensure mutable list is passed
+
+        // Update filter status text
+        binding.filterStatus.text = currentFilter?.let { "Showing: $it" } ?: "Showing all locations"
+
+        // Force refresh the RecyclerView
+        binding.warningsRecyclerView.adapter?.notifyDataSetChanged()
     }
 
     private fun showWarningDetails(warning: Warning) {
@@ -286,7 +309,7 @@ class WarningFragment : Fragment() {
         val warningType: String
     )
     data class Warning(
-        val id: String = "",
+        var id: String = "",
         var type: String = "", // "landslide" or "flood"
         val location: String = "",
         val timestamp: String = "",
