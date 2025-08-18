@@ -11,6 +11,18 @@
     <color name="gray_200">#FFEEEEEE</color>
     <color name="gray_600">#FF757575</color>
 
+    <color name="danger_high">#FF5252</color>
+    <color name="safe">#4CAF50</color>
+
+    <color name="surfaceContainer">#FFF2F6FF</color>
+    <color name="error_color">#FF0000</color>
+    <color name="outline_color">#FF0000</color>
+    <!-- res/values/colors.xml -->
+    <color name="dark_background">#121212</color>
+    <color name="dark_text_color">#FFFFFF</color>
+
+
+
     <!-- Background colors -->
     <color name="background_light">#F5F5F5</color>
 
