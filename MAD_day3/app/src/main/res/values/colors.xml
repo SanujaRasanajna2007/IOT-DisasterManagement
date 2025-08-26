@@ -10,7 +10,8 @@
     <color name="red_500">#FFF44336</color>
     <color name="gray_200">#FFEEEEEE</color>
     <color name="gray_600">#FF757575</color>
-
+    <color name="purple_500">#FF6200EE</color>
+    <color name="gray">#FF9E9E9E</color>
     <color name="danger_high">#FF5252</color>
     <color name="safe">#4CAF50</color>
 
