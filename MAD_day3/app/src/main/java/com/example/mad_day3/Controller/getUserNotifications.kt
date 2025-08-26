@@ -43,24 +43,24 @@ class getUserNotifications {
                             Log.e("DEBUG OUT : ", messageTest)
                             Log.e("DEBUG OUT : ", typeTest)
                             // Replace document.getString("time") with this:
-                            val timestamp = document.getTimestamp("time")
-                            val timeString = if (timestamp != null) {
-                                // Convert Firestore Timestamp to formatted string
-                                val sdf = SimpleDateFormat(
-                                    "dd MMMM yyyy 'at' HH:mm:ss 'UTC'XXX",
-                                    Locale.ENGLISH
-                                )
-                                sdf.timeZone = TimeZone.getTimeZone("Asia/Kolkata") // For UTC+5:30
-                                sdf.format(timestamp.toDate())
-                            } else {
-                                "" // Fallback value
-                            }
-                            Log.e("DEBUG OUT : ", timeString)
+                            val timestamp = document.getString("time")
+//                            val timeString = if (timestamp != null) {
+//                                // Convert Firestore Timestamp to formatted string
+//                                val sdf = SimpleDateFormat(
+//                                    "dd MMMM yyyy 'at' HH:mm:ss 'UTC'XXX",
+//                                    Locale.ENGLISH
+//                                )
+//                                sdf.timeZone = TimeZone.getTimeZone("Asia/Kolkata") // For UTC+5:30
+//                                //sdf.format(timestamp.toDate())
+//                            } else {
+//                                "" // Fallback value
+//                            }
+                            Log.e("DEBUG OUT : ", timestamp.toString())
                             notificationSet.add(notificationModel(
                                 document.id,
                                 document.getString("message"),
                                 document.getBoolean("isRead"),
-                                timeString,
+                                timestamp.toString(),
                                 document.getString("type"),
                                 document.getString("userID")
                             ))

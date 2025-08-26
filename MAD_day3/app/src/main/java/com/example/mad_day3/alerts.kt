@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mad_day3.Controller.LandSlideItem
@@ -44,6 +45,7 @@ class alerts : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val cityName = getCityName().getCityName(requireContext())
+        view.findViewById<TextView>(R.id.locationText).text = "Current location: $cityName"
         val loadCardsObj = loadCardsController()
         view.findViewById<RecyclerView>(R.id.recycleview).visibility = View.GONE
         loadCardsObj.getLandslideCard(view, savedInstanceState, requireContext(), cityName)

@@ -45,17 +45,18 @@ class notificationsAdapter(private val notificationItems: List<notificationModel
         holder.notificationTypeUI.text = notifications.type
         holder.messageNotificationUI.text = notifications.message
 
-        val regex = "UTC([+-])(\\d{1,2}):(\\d{2})".toRegex()
-        val normalized = notifications.time
+//        val regex = "UTC([+-])(\\d{1,2}):(\\d{2})".toRegex()
+//        val normalized = notifications.time
+//
+//        val parser = DateTimeFormatter.ofPattern("dd MMMM yyyy 'at' HH:mm:ss 'UTC'XXX", Locale.ENGLISH)
+//        val zonedDateTime = ZonedDateTime.parse(normalized, parser)
+//
+//        val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH)
+//        val timeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a", Locale.ENGLISH)
 
-        val parser = DateTimeFormatter.ofPattern("dd MMMM yyyy 'at' HH:mm:ss 'UTC'XXX", Locale.ENGLISH)
-        val zonedDateTime = ZonedDateTime.parse(normalized, parser)
-
-        val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH)
-        val timeFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a", Locale.ENGLISH)
-
-        holder.timeNotificationUI.text = timeFormatter.format(zonedDateTime)
-        holder.dateNotificationUI.text = dateFormatter.format(zonedDateTime)
+//        holder.timeNotificationUI.text = timeFormatter.format(zonedDateTime)
+//        holder.dateNotificationUI.text = dateFormatter.format(zonedDateTime)
+        holder.timeNotificationUI.text = notifications.time
         holder.dismissBtn.setOnClickListener {
             try {
                 db.collection("notifications")

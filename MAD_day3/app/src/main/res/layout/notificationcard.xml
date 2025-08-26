@@ -75,11 +75,10 @@
                 android:id="@+id/dateNotification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2020/04/20"
+                android:text=""
                 android:textColor="@color/gray_600"
                 android:textSize="12sp"
                 android:layout_marginStart="16dp"
-                android:drawableStart="@drawable/ic_date"
                 android:drawablePadding="4dp"
                 android:drawableTint="@color/gray_600" />
         </LinearLayout>
