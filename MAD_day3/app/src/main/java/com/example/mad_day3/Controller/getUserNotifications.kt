@@ -1,8 +1,10 @@
 package com.example.mad_day3.Controller
 
+import android.app.Dialog
 import android.content.Context
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +25,15 @@ class getUserNotifications {
     }
     fun getNotifications(view : View, userID : String?, context : Context){
         try {
+            // Show loading dialog
+            val loadingDialog = Dialog(context)
+            loadingDialog.setContentView(R.layout.custom_dialog)
+            loadingDialog.window?.setLayout(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            loadingDialog.setCancelable(false)
+            loadingDialog.show()
             //get data
             db.collection("notifications")
                 .whereEqualTo("userID",userID)
@@ -65,6 +76,7 @@ class getUserNotifications {
                                 document.getString("userID")
                             ))
                         }
+                        loadingDialog.dismiss()
                         if(notificationSet.isNotEmpty()){
                             setupRecycleNotifications(view,notificationSet,context,userID)
                             view.findViewById<RecyclerView>(R.id.notificationHolderSet).visibility = View.VISIBLE

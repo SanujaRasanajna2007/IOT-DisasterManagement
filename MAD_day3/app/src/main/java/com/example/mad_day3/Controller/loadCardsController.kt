@@ -1,13 +1,16 @@
 package com.example.mad_day3.Controller
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mad_day3.Model.WaterLevelSensorData
 import com.example.mad_day3.Model.landslideGroundMotions
 import com.example.mad_day3.Model.landslideTilt
 import com.example.mad_day3.Model.rainfallModel
@@ -33,10 +36,46 @@ class loadCardsController {
     val landslideTiltRef: DatabaseReference = database.getReference("Sensors/TiltReadings")
     val RainfallRef: DatabaseReference = database.getReference("Sensors/BMP180Readings")
     val WaterLevelRef: DatabaseReference = database.getReference("Sensors/waterLevelSensor/levelData")
+    val RainReadRef : DatabaseReference = database.getReference("Sensors/RainReadings")
+    private var rainEventListenerSlide : ValueEventListener? = null
     private var tiltEventListener: ValueEventListener? = null
     private var MotionEventListener2: ValueEventListener? = null
     private var rainfallListenerInputSection: ValueEventListener? = null
     private var waterLevelInputSection: ValueEventListener? = null
+    public fun getRainDataLandslide(view : View, cityName : String?, context : Context){
+        rainEventListenerSlide?.let { RainReadRef.removeEventListener(it) }
+        rainEventListenerSlide = object  : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var latestReading: WaterLevelSensorData? = null
+               if(snapshot.exists()){
+                   for (childSnapshot in snapshot.children){
+                       val reading = childSnapshot.getValue(WaterLevelSensorData::class.java)
+                       reading?.let {
+                           if (latestReading == null ||
+                               (latestReading?.timestamp != null &&
+                                       it.timestamp > latestReading!!.timestamp)) {
+                               latestReading = it
+                           }
+                       }
+                   }
+                   latestReading?.let{
+                    if(it.digital == 1){
+                        view.findViewById<TextView>(R.id.rainfallStatus)?.text = "● Rain"
+                    }else{
+                        view.findViewById<TextView>(R.id.rainfallStatus)?.text = "● Normal"
+                    }
+                   }
+               }else{
+
+               }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Test : rain status error : ${error.message}", Toast.LENGTH_SHORT).show()
+                Log.e("Firebase", "Data read failed: ${error.message}")
+            }
+        }
+        rainEventListenerSlide?.let { RainReadRef.addValueEventListener(it) }
+    }
     public fun getTiltData(view: View, cityName: String?) {
         // Remove existing listener if any
         tiltEventListener?.let { landslideTiltRef.removeEventListener(it) }
@@ -164,9 +203,9 @@ class loadCardsController {
 //                            view.findViewById<TextView>(R.id.lastUpdated4)?.text =
 //                                it.altitude_m?.toString() ?: "N/A"
 //                        }
-                        view.findViewById<TextView>(R.id.preasureAmu)?.text = it.pressure_hPa?.toString() ?: "N/A"
-                        view.findViewById<TextView>(R.id.altitudeAmu)?.text = it.altitude_m?.toString() ?: "N/A"
-                        view.findViewById<TextView>(R.id.tempAmu)?.text = it.temperature_C?.toString() ?: "N/A"
+                        view.findViewById<TextView>(R.id.preasureAmu)?.text = it.pressure_hPa?.toString() + " pa" ?: "N/A"
+                        view.findViewById<TextView>(R.id.altitudeAmu)?.text = it.altitude_m?.toString() + " M" ?: "N/A"
+                        view.findViewById<TextView>(R.id.tempAmu)?.text = it.temperature_C?.toString() + " C" ?: "N/A"
                     }
                 }
             }
@@ -178,9 +217,9 @@ class loadCardsController {
         }
         rainfallListenerInputSection?.let { RainfallRef.addValueEventListener(it) }
     }
-    fun getWaterLevelData(view: View, cityName: String?){
+    fun getWaterLevelData(view: View, cityName: String?, context : Context){
         waterLevelInputSection?.let { WaterLevelRef.removeEventListener(it) }
-        rainfallListenerInputSection = object : ValueEventListener{
+        waterLevelInputSection = object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()){
                     var latestwaterLevelReading: waterLevelModel? = null
@@ -203,9 +242,12 @@ class loadCardsController {
 //                        }
                         view.findViewById<TextView>(R.id.waterLevelAmu)?.text = it.WaterLevelPercentage?.toString() ?: "N/A"
                     }
+                }else{
+                    Toast.makeText(context, "Snapshot does not exists", Toast.LENGTH_SHORT).show()
                 }
             }
             override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Test : error : ${error.message}", Toast.LENGTH_SHORT).show()//FIXME: TEST ONLY
                 Log.e("Firebase", "Data read failed (waterlevel): ${error.message}")
             }
         }
@@ -226,6 +268,15 @@ class loadCardsController {
     }
      fun getLandslideCard(view: View, savedInstanceState: Bundle?, context: Context, cityName: String?){
         try {
+            // Show loading dialog
+            val loadingDialog = Dialog(context)
+            loadingDialog.setContentView(R.layout.custom_dialog)
+            loadingDialog.window?.setLayout(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            loadingDialog.setCancelable(false)
+            loadingDialog.show()
             db.collection("locationInfo")
                 .whereEqualTo("name", cityName)
                 .get()
@@ -247,7 +298,8 @@ class loadCardsController {
                         setupRecyclerViewRainfall(view, rainfallItems, context)
                         view.findViewById<RecyclerView>(R.id.recycleview).visibility = View.VISIBLE
                         getRainfallData(view,cityName)
-                        getWaterLevelData(view,cityName)
+                        getWaterLevelData(view,cityName, context)
+                        getRainDataLandslide(view,cityName,context)
                     }else {
                         Toast.makeText(context, "No rainfall data available", Toast.LENGTH_SHORT).show()
                         Log.d("AlertsFragment", "No landslide items found")
@@ -261,6 +313,8 @@ class loadCardsController {
                         Toast.makeText(context, "No landslide data available", Toast.LENGTH_SHORT).show()
                         Log.d("AlertsFragment", "No landslide items found")
                     }
+                    // Dismiss dialog after data is processed
+                    loadingDialog.dismiss()
                 }
                 .addOnFailureListener { exception ->
                     Toast.makeText(context, "Failed to retrieve data: ${exception.message}", Toast.LENGTH_LONG).show()
