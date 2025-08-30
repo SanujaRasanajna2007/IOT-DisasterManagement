@@ -1,11 +1,13 @@
 package com.example.mad_day3
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +44,7 @@ class alerts : Fragment() {
 //        landSlideRecyclerView.adapter = landSlideAdapter(items)
 //        Log.d("AlertsFragment", "RecyclerView adapter set with ${items.size} items")
 //    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val cityName = getCityName().getCityName(requireContext())
@@ -57,6 +60,7 @@ class alerts : Fragment() {
 //            loadCardsObj.getLandslideCard(view, savedInstanceState, requireContext(), cityName)
 //        }
     }
+
     companion object {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =

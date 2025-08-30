@@ -1,9 +1,11 @@
 package com.example.mad_day3.Controller
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,15 +55,14 @@ class loadCardsController {
                                (latestReading?.timestamp != null &&
                                        it.timestamp > latestReading!!.timestamp)) {
                                latestReading = it
-                               Toast.makeText(context, "Test : rain status : ${it.analog.toString()}", Toast.LENGTH_SHORT).show()
                            }
                        }
                    }
                    latestReading?.let{
                     if(it.digital == 1){
-                        view.findViewById<TextView>(R.id.rainfallStatus)?.text = "Rain"
+                        view.findViewById<TextView>(R.id.rainfallStatus)?.text = "● Rain"
                     }else{
-                        view.findViewById<TextView>(R.id.rainfallStatus)?.text = "error"
+                        view.findViewById<TextView>(R.id.rainfallStatus)?.text = "● Normal"
                     }
                    }
                }else{
@@ -267,6 +268,15 @@ class loadCardsController {
     }
      fun getLandslideCard(view: View, savedInstanceState: Bundle?, context: Context, cityName: String?){
         try {
+            // Show loading dialog
+            val loadingDialog = Dialog(context)
+            loadingDialog.setContentView(R.layout.custom_dialog)
+            loadingDialog.window?.setLayout(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            loadingDialog.setCancelable(false)
+            loadingDialog.show()
             db.collection("locationInfo")
                 .whereEqualTo("name", cityName)
                 .get()
@@ -303,6 +313,8 @@ class loadCardsController {
                         Toast.makeText(context, "No landslide data available", Toast.LENGTH_SHORT).show()
                         Log.d("AlertsFragment", "No landslide items found")
                     }
+                    // Dismiss dialog after data is processed
+                    loadingDialog.dismiss()
                 }
                 .addOnFailureListener { exception ->
                     Toast.makeText(context, "Failed to retrieve data: ${exception.message}", Toast.LENGTH_LONG).show()
