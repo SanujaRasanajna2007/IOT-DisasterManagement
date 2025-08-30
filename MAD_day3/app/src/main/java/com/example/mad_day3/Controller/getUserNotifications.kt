@@ -81,6 +81,7 @@ class getUserNotifications {
                             setupRecycleNotifications(view,notificationSet,context,userID)
                             view.findViewById<RecyclerView>(R.id.notificationHolderSet).visibility = View.VISIBLE
                         }
+                        loadingDialog.dismiss()
                     }
                 }
         }catch (e : Exception){

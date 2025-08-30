@@ -25,6 +25,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.firestore.firestore
+import com.jjoe64.graphview.GraphView
+import java.time.LocalTime
 
 class loadCardsController {
     var change : Double = 0.0
@@ -33,15 +35,52 @@ class loadCardsController {
     val db = Firebase.firestore
     val database = FirebaseDatabase.getInstance()
     val landslideMovementRef: DatabaseReference = database.getReference("Sensors/MPU6050Readings")
+    private var tempChartAdapter: rainTempChartAdapter? = null
+    private var slopeChartAdapter: slopeChartAdapter? = null
     val landslideTiltRef: DatabaseReference = database.getReference("Sensors/TiltReadings")
     val RainfallRef: DatabaseReference = database.getReference("Sensors/BMP180Readings")
     val WaterLevelRef: DatabaseReference = database.getReference("Sensors/waterLevelSensor/levelData")
-    val RainReadRef : DatabaseReference = database.getReference("Sensors/RainReadings")
+    var RainReadRef : DatabaseReference = database.getReference("Sensors/RainReadings")
     private var rainEventListenerSlide : ValueEventListener? = null
     private var tiltEventListener: ValueEventListener? = null
     private var MotionEventListener2: ValueEventListener? = null
     private var rainfallListenerInputSection: ValueEventListener? = null
     private var waterLevelInputSection: ValueEventListener? = null
+    public fun getRainDataLandsFlood(view : View, cityName : String?, context : Context){
+        RainReadRef = database.getReference("Sensors/FloodsRainReadings")
+        rainEventListenerSlide?.let { RainReadRef.removeEventListener(it) }
+        rainEventListenerSlide = object  : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var latestReading: WaterLevelSensorData? = null
+                if(snapshot.exists()){
+                    for (childSnapshot in snapshot.children){
+                        val reading = childSnapshot.getValue(WaterLevelSensorData::class.java)
+                        reading?.let {
+                            if (latestReading == null ||
+                                (latestReading?.timestamp != null &&
+                                        it.timestamp > latestReading!!.timestamp)) {
+                                latestReading = it
+                            }
+                        }
+                    }
+                    latestReading?.let{
+                        if(it.digital == 1){
+                            view.findViewById<TextView>(R.id.rainfallStatus)?.text = "● Rain"
+                        }else{
+                            view.findViewById<TextView>(R.id.rainfallStatus)?.text = "● Normal"
+                        }
+                    }
+                }else{
+
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Test : rain status error : ${error.message}", Toast.LENGTH_SHORT).show()
+                Log.e("Firebase", "Data read failed: ${error.message}")
+            }
+        }
+        rainEventListenerSlide?.let { RainReadRef.addValueEventListener(it) }
+    }
     public fun getRainDataLandslide(view : View, cityName : String?, context : Context){
         rainEventListenerSlide?.let { RainReadRef.removeEventListener(it) }
         rainEventListenerSlide = object  : ValueEventListener{
@@ -60,9 +99,9 @@ class loadCardsController {
                    }
                    latestReading?.let{
                     if(it.digital == 1){
-                        view.findViewById<TextView>(R.id.rainfallStatus)?.text = "● Rain"
+                        view.findViewById<TextView>(R.id.statusDetail)?.text = "● Rain"
                     }else{
-                        view.findViewById<TextView>(R.id.rainfallStatus)?.text = "● Normal"
+                        view.findViewById<TextView>(R.id.statusDetail)?.text = "● Normal"
                     }
                    }
                }else{
@@ -170,6 +209,12 @@ class loadCardsController {
 //                            view.findViewById<TextView>(R.id.movementStatus)?.text =
 //                                it.accelX?.toString() ?: "N/A"
 //                        }
+                        //TODO: TOHERE
+                        // Update the slope movement chart with new data
+                        val currentTime = System.currentTimeMillis().toDouble() / 1000 // Current timestamp in seconds
+                        it.accelX?.let { x ->
+                            slopeChartAdapter?.addMovementData(currentTime, x)
+                        }
                     }
                 }
             }
@@ -206,6 +251,11 @@ class loadCardsController {
                         view.findViewById<TextView>(R.id.preasureAmu)?.text = it.pressure_hPa?.toString() + " pa" ?: "N/A"
                         view.findViewById<TextView>(R.id.altitudeAmu)?.text = it.altitude_m?.toString() + " M" ?: "N/A"
                         view.findViewById<TextView>(R.id.tempAmu)?.text = it.temperature_C?.toString() + " C" ?: "N/A"
+                        // Update the graph with new temperature data
+                        val currentTime = System.currentTimeMillis().toDouble() / 1000 // Current timestamp in seconds
+                        it.temperature_C?.let { temp ->
+                            tempChartAdapter?.addTemperatureData(currentTime, temp)
+                        }
                     }
                 }
             }
@@ -261,6 +311,22 @@ class loadCardsController {
         // Add this to verify if adapter is set
         Log.d("AlertsFragment", "RecyclerView adapter set with ${items.size} items")
     }
+fun setupRecycleTempChart(view: View, context: Context) {
+    val tempChartRecyclerView = view.findViewById<RecyclerView>(R.id.recycleRainfallTempChart)
+    tempChartRecyclerView.layoutManager = LinearLayoutManager(context)
+    tempChartAdapter = rainTempChartAdapter()
+    tempChartRecyclerView.adapter = tempChartAdapter
+
+    Log.d("AlertsFragment", "Temperature chart RecyclerView set")
+}
+    fun setupRecycleSlopeChart(view: View, context: Context) {
+        val slopeChartRecyclerView = view.findViewById<RecyclerView>(R.id.recycleRainfallTempChart)
+        slopeChartRecyclerView.layoutManager = LinearLayoutManager(context)
+        slopeChartAdapter = slopeChartAdapter()
+        slopeChartRecyclerView.adapter = slopeChartAdapter
+
+        Log.d("AlertsFragment", "Slope movement chart RecyclerView set")
+    }
      fun setupRecyclerViewRainfall(view: View, items: List<rainfallItem>, context: Context){
         val RainfallRecyclerView = view.findViewById<RecyclerView>(R.id.recycleview)
         RainfallRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -299,7 +365,8 @@ class loadCardsController {
                         view.findViewById<RecyclerView>(R.id.recycleview).visibility = View.VISIBLE
                         getRainfallData(view,cityName)
                         getWaterLevelData(view,cityName, context)
-                        getRainDataLandslide(view,cityName,context)
+                        getRainDataLandsFlood(view,cityName,context)
+                        setupRecycleTempChart(view,context)
                     }else {
                         Toast.makeText(context, "No rainfall data available", Toast.LENGTH_SHORT).show()
                         Log.d("AlertsFragment", "No landslide items found")
@@ -308,7 +375,9 @@ class loadCardsController {
                         setupRecyclerView(view, landslideItems, context)
                         view.findViewById<RecyclerView>(R.id.recycleview).visibility = View.VISIBLE
                         getTiltData(view,cityName)
+                        getRainDataLandslide(view,cityName,context)
                         getMotionData(view,cityName)
+                        setupRecycleSlopeChart(view,context)
                     } else {
                         Toast.makeText(context, "No landslide data available", Toast.LENGTH_SHORT).show()
                         Log.d("AlertsFragment", "No landslide items found")
