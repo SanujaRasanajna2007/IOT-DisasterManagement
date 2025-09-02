@@ -187,10 +187,4 @@
             android:id="@+id/tempAmu"
             android:textColor="#2c3e50" />
     </LinearLayout>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="View history">
-    </Button>
 </LinearLayout>

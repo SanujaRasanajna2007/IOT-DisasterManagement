@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             sharedPref = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
             if (email.isEmpty() || password.isEmpty()) {
+                loadingDialog.dismiss()
                 Toast.makeText(this, "Please enter both email and password", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
@@ -84,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                                 startActivity(intent2)
                                 return@addOnSuccessListener
                             } else {
+                                loadingDialog.dismiss()
                                 Toast.makeText(this, "Invalid password", Toast.LENGTH_LONG).show()
                             }
                         }
