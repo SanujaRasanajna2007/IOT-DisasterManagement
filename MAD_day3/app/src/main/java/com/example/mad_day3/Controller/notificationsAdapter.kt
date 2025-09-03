@@ -36,7 +36,6 @@ class notificationsAdapter(private val notificationItems: List<notificationModel
             .inflate(R.layout.notificationcard, parent, false)
         return NotificationCardViewHolder(view)
     }
-
     override fun onBindViewHolder(
         holder: NotificationCardViewHolder,
         position: Int
