@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.firestore.firestore
 import com.jjoe64.graphview.GraphView
+import org.w3c.dom.Text
 import java.time.LocalTime
 
 class loadCardsController {
@@ -204,13 +205,13 @@ class loadCardsController {
                                  "NO: "+ it.accelX?.toString() ?: "N/A"
                         }
                         change = it.accelX
+                        view.findViewById<TextView>(R.id.movementY)?.text = it.accelY?.toString() ?: "N/A"
+                        view.findViewById<TextView>(R.id.movementZ)?.text = it.accelZ?.toString() ?: "N/A"
 
 //                        if(it.location == cityName){
 //                            view.findViewById<TextView>(R.id.movementStatus)?.text =
 //                                it.accelX?.toString() ?: "N/A"
 //                        }
-                        //TODO: TOHERE
-                        // Update the slope movement chart with new data
                         val currentTime = System.currentTimeMillis().toDouble() / 1000 // Current timestamp in seconds
                         it.accelX?.let { x ->
                             slopeChartAdapter?.addMovementData(currentTime, x)
@@ -353,7 +354,7 @@ fun setupRecycleTempChart(view: View, context: Context) {
                     for (document in result) {
                         when (document.getString("category")) {
                             "Landslide" -> {
-                                landslideItems.add(LandSlideItem(0.0, "test", ""))
+                                landslideItems.add(LandSlideItem(0.0, "test", "","",""))
                             }
                             "Rainfall" -> {
                                 rainfallItems.add(rainfallItem(0.0,0.0,0.0))
